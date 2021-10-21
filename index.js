@@ -1,58 +1,41 @@
-const express = require('express')
-const app = express()
-const port = 3000
+const express = require("express");
+const bodyParser = require("body-parser");
+const repository = require("./repository");
+const app = express();
+const port = 3000;
 
-const products = [
-    {
-        id: 1,
-        name: "MacBook",
-        price: 1999.00,
-        image: "images/macbook.jpg",
-        stock: 20
-    },
-    {
-        id: 2,
-        name: "iPhone 13",
-        price: 899.00,
-        image: "images/iphone13.jpg",
-        stock: 80
-    },
-    {
-        id: 3,
-        name: "iPhone 12 Pro",
-        price: 699.00,
-        image: "images/iphone12pro.jpg",
-        stock: 80
-    },
-    {
-        id: 4,
-        name: "Airpods Pro",
-        price: 299.00,
-        image: "images/airpods.jpg",
-        stock: 200
-    },
-    {
-        id: 5,
-        name: "iPad Pro",
-        price: 1299.00,
-        image: "images/ipad.jpg",
-        stock: 85
-    },
-    {
-        id: 6,
-        name: "Lightning charger (Fast charge)",
-        price: 199.00,
-        image: "images/charger.jpg",
-        stock: 200
-    },
-]
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-app.get("/api/products", (req, res) => {
-  res.send(products)
+app.get("/api/products", async (req, res) => {
+    res.send(await repository.read());
 });
 
-app.use("/", express.static("FE"));
+app.post("/api/pay", async (req, res) => {
+    const ids = req.body;
+    const productsCopy = await repository.read();
+
+    let error = false;
+    ids.forEach((id) => {
+        const product = productsCopy.find((p) => p.id === id);
+        if (product.stock > 0) {
+            product.stock--;
+        } else {
+            error = true;
+        }
+    });
+
+    if (error){
+        res.send("Out of stock").statusCode(400);
+    }
+    else {
+        await repository.write(productsCopy);
+        res.send(productsCopy);
+    }
+});
+
+app.use("/", express.static("fe"));
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+    console.log(`Example app listening at http://localhost:${port}`);
+});

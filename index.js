@@ -1,6 +1,8 @@
+const express = require("express");
 const bodyParser = require("body-parser");
-const repository = require("./repository")
-const port = 3000
+const repository = require("./repository");
+const app = express();
+const port = 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

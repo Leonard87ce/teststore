@@ -34,7 +34,7 @@ app.post("/api/pay", async (req, res) => {
     }
 });
 
-app.use("/", express.static("fe"));
+app.use("/", express.static("FE"));
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);

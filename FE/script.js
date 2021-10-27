@@ -41,7 +41,7 @@ function displayProducts() {
         let buttonHTML = `<button class="button-add" onclick="add(${p.id}, ${p.price})">Pay</button>`;
 
         if (p.stock <= 0) {
-            buttonHTML = `<button disabled class="button-add disabled" onclick="add(${p.id}, ${p.price})">Sin stock</button>`;
+            buttonHTML = `<button disabled class="button-add disabled" onclick="add(${p.id}, ${p.price})">Out of stock</button>`;
         }
 
         productsHTML +=
